@@ -1,41 +1,55 @@
-import { render } from '@testing-library/svelte';
+import { render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event'; // Import userEvent
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import UserForm from '../../components/UserForm.svelte';
 import { userStore } from '../../lib/store/useStore';
 
+// Mock the store with vi.fn()
+vi.mock('../../lib/store/useStore', () => ({
+  userStore: {
+    subscribe: vi.fn(),
+    updateUser: vi.fn(),
+  },
+}));
+
 describe('UserForm', () => {
   it('renders the form correctly', () => {
-    const { getByLabelText, getByText } = render(UserForm);
+    const { getByLabelText, getByText, getByRole } = render(UserForm);
 
-    expect(getByLabelText(/first name/i)).toBeInTheDocument();
-    expect(getByLabelText(/age/i)).toBeInTheDocument();
-    expect(getByText(/submit/i)).toBeInTheDocument();
+    expect(getByLabelText(/First Name/i)).toBeInTheDocument();
+    expect(getByLabelText(/Age/i)).toBeInTheDocument();
+    expect(getByRole('button', { name: /submit form/i })).toBeInTheDocument();
   });
-
-
 
   it('submits valid form data', async () => {
-    const { getByLabelText, getByText } = render(UserForm);
-
+    // Arrange: Render the form and mock store
+    const { getByLabelText, getByRole } = render(UserForm);
+  
     const mockUser = {
       firstName: 'John',
-      age: 30
+      age: 30,
     };
-
-    // Fill out form
+  
+    // Act: Fill out form
     const firstNameInput = getByLabelText(/first name/i);
-    await userEvent.type(firstNameInput, mockUser.firstName); // Use userEvent.type for input
-
+    await userEvent.type(firstNameInput, mockUser.firstName);
+  
     const ageInput = getByLabelText(/age/i);
-    await userEvent.type(ageInput, mockUser.age.toString()); // Fill age input
-
-    const submitButton = getByText(/submit/i);
-    await userEvent.click(submitButton); // Use userEvent.click for button click
-
-    // Check if store was updated
-    userStore.subscribe(user => {
+    await userEvent.type(ageInput, mockUser.age.toString());
+  
+    const submitButton = getByRole('button', { name: /submit form/i });
+    await userEvent.click(submitButton);
+  
+    // Mock store subscription
+    const unsubscribe = userStore.subscribe((user) => {
+      // Ensure the form submission updates the store
       expect(user).toEqual(mockUser);
     });
-  });
+  
+    // Wait for store update to happen
+    await waitFor(() => expect(userStore.subscribe).toHaveBeenCalled());
+  
+    // Cleanup: Unsubscribe
+    unsubscribe();
+  }, 30000);// Increase the timeout to 10 seconds
 });

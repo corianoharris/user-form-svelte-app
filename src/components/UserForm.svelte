@@ -71,6 +71,7 @@
 
     <button
         type="submit"
+        aria-label="Submit Form"
         class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
         disabled={isSubmitting}
     >
@@ -80,6 +81,7 @@
     {#if submittedData !== null}
         <button
             type="button"
+            aria-label="Reset Form"
             class="w-full bg-red-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 mt-4"
             on:click={resetForm}
         >
