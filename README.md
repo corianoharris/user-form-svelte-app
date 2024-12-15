@@ -1,38 +1,52 @@
-# sv
+# Svelte Form with Zod Validation
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+This is a simple Svelte form that collects a user's first name and age. It uses Zod for form validation, Tailwind CSS for styling, and Svelte stores to manage form data. The form validates the input data before submission and displays the submitted data upon successful submission.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Form Validation**: Ensures that the first name is not empty and the age is a valid number.
+- **Tailwind CSS Styling**: Provides responsive, modern, and clean design for the form.
+- **Form Submission Handling**: Disables the submit button while the form is submitting.
+- **Form Reset**: Allows the user to reset the form after submission.
+- **Display Submitted Data**: Shows the submitted data after a successful form submission.
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Installation
 
-# create a new project in my-app
-npx sv create my-app
-```
+To run this project, make sure you have the following tools installed:
 
-## Developing
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- [Svelte](https://svelte.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Zod](https://zod.dev/) for form validation
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Steps to Set Up
 
-```bash
-npm run dev
+1. Clone this repository or create a new Svelte project.
+2. Install dependencies:
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+    ```bash
+    npm install
+    ```
 
-## Building
+3. Make sure Tailwind CSS is properly configured by following the [official Tailwind CSS setup guide for Svelte](https://tailwindcss.com/docs/guides/svelte).
+4. Add the `zod` library:
 
-To create a production version of your app:
+    ```bash
+    npm install zod
+    ```
 
-```bash
-npm run build
-```
+5. Start the development server:
 
-You can preview the production build with `npm run preview`.
+    ```bash
+    npm run dev
+    ```
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+6. Open the application in your browser at `http://localhost:5000`.
+
+## Code Explanation
+
+### `formData` Store
+This Svelte writable store holds the form data, including the `firstName` and `age` fields.
+
+```ts
+const formData = writable({ firstName: "", age: "" });
